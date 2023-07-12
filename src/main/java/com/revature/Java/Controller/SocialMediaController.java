@@ -68,6 +68,8 @@ public class SocialMediaController {
         app.get("/messages", this::getAllMessagesHandler);
         // Retrieve a message by ID
         app.get("/messages/{message_id}", this::getMessageByIdHandler);
+        // localhost:8080/accounts/{account_id}/messages.
+        app.get("/accounts/{account_id}/messages", this::getMessageByUserIdHandler);
         // Delete message by ID
         app.delete("/messages/{message_id}", this::deleteMessageByIDHandler);
         // Update a message
@@ -116,39 +118,23 @@ public class SocialMediaController {
 
     private void getAllMessagesHandler(Context ctx) {
         List<Message> messages = messageService.getAllMessages();
-        ctx.json(messages).status(200);
-
-        /*
-         * List<Message> messages = messageService.getAllMessages();
-         * ctx.json(messages).status(200);
-         * /*
-         * try {
-         * String response = objectMapper.writeValueAsString(messages);
-         * ctx.result(response).contentType("application/json").status(200);
-         * } catch (JsonProcessingException e) {
-         * e.printStackTrace();
-         * ctx.status(500);
-         * }
-         */
+        // ctx.json(messages).status(200);
+        if (messages != null) {
+            ctx.json(messages).status(200);
+        } else {
+            ctx.status(200).result("");
+        }
     }
 
     private void getMessageByIdHandler(Context ctx) {
         int messageId = Integer.parseInt(ctx.pathParam("message_id"));
         Message message = messageService.getMessageById(messageId);
-        ctx.json(message).status(200);
-        /*
-         * if (message != null) {
-         * try {
-         * String response = objectMapper.writeValueAsString(message);
-         * ctx.result(response).contentType("application/json").status(200);
-         * } catch (JsonProcessingException e) {
-         * e.printStackTrace();
-         * ctx.status(500);
-         * }
-         * } else {
-         * ctx.status(404);
-         * }
-         */
+        // ctx.json(message).status(200);
+        if (message != null) {
+            ctx.json(message).status(200);
+        } else {
+            ctx.status(200).result("");
+        }
     }
 
     private void deleteMessageByIDHandler(Context ctx) {
@@ -180,14 +166,15 @@ public class SocialMediaController {
     }
 
     private void updateMessageByIDHandler(Context ctx) {
-        // int messageId = Integer.parseInt(ctx.pathParam("message_id"));
+        // int message_d = Integer.parseInt(ctx.pathParam("message_id"));
+        // int message_text = Integer.parseInt(ctx.pathParam("message_id"));
         try {
             Message message = objectMapper.readValue(ctx.body(), Message.class);
             Message updatedMessage = messageService.updateMessageText(message);
             if (updatedMessage != null) {
                 String response = objectMapper.writeValueAsString(updatedMessage);
                 // ctx.result(response).status(200);
-                ctx.json(response).status(200);
+                ctx.json(updatedMessage).status(200);
             } else {
                 ctx.status(400);
             }
@@ -230,6 +217,17 @@ public class SocialMediaController {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             ctx.status(400);
+        }
+    }
+
+    private void getMessageByUserIdHandler(Context ctx) {
+        int postedby = Integer.parseInt(ctx.pathParam("account_id"));
+        List<Message> messages = messageService.getMessagesByAccountId(postedby);
+        // ctx.json(message).status(200);
+        if (messages != null) {
+            ctx.json(messages).status(200);
+        } else {
+            ctx.status(200).result("");
         }
     }
 }
