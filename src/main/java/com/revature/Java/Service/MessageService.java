@@ -59,7 +59,7 @@ public class MessageService {
             messageDAO.deleteMessage(messageId);
             return message;
         }
-        return message;
+        return null;
     }
 
     /**
@@ -99,6 +99,6 @@ public class MessageService {
      */
     private boolean isMessageValid(Message message) {
         String messageText = message.getMessage_text();
-        return !messageText.isBlank() && messageText.length() <= 255;
+        return !messageText.isBlank() && messageText.length() < 255;
     }
 }

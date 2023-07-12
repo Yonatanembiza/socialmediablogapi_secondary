@@ -22,7 +22,7 @@ public class MessageDAO {
         List<Message> messages = new ArrayList<>();
 
         try {
-            String sql = "SELECT * FROM Message";
+            String sql = "SELECT * FROM message";
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet rs = preparedStatement.executeQuery();
@@ -104,7 +104,7 @@ public class MessageDAO {
     public void deleteMessage(int messageId) {
         Connection connection = ConnectionUtil.getConnection();
         try {
-            String sql = "DELETE FROM Message WHERE message_id = ?";
+            String sql = "DELETE FROM message WHERE message_id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
             preparedStatement.setInt(1, messageId);

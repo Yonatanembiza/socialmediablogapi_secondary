@@ -36,7 +36,7 @@ public class CreateMessageTest {
                 app = socialMediaController.startAPI();
                 webClient = HttpClient.newHttpClient();
                 objectMapper = new ObjectMapper();
-                app.start(9000);
+                app.start(8888);
                 Thread.sleep(1000);
         }
 
