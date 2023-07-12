@@ -188,12 +188,12 @@ public class SocialMediaController {
         try {
             Account account = objectMapper.readValue(ctx.body(), Account.class);
             // This will omit the account_id
-            account.setAccount_id(0);
+            // account.setAccount_id(0);
             Account registeredAccount = accountService.registerAccount(account.username, account.password);
             if (registeredAccount != null) {
-                String response = objectMapper.writeValueAsString(registeredAccount);
+                // String response = objectMapper.writeValueAsString(registeredAccount);
                 // ctx.result(response).contentType("application/json").status(200);
-                ctx.json(response).status(200);
+                ctx.json(registeredAccount).status(200);
             } else {
                 ctx.status(400);
             }
@@ -206,11 +206,13 @@ public class SocialMediaController {
     private void loginUserHandler(Context ctx) {
         try {
             Account account = objectMapper.readValue(ctx.body(), Account.class);
+            // String username = ctx.pathParam("username");
+            // String password = ctx.pathParam("password");
             Account loggedInAccount = accountService.login(account.username, account.password);
             if (loggedInAccount != null) {
-                String response = objectMapper.writeValueAsString(loggedInAccount);
+                // String response = objectMapper.writeValueAsString(loggedInAccount);
                 // ctx.result(response).contentType("application/json").status(200);
-                ctx.json(response).status(200);
+                ctx.json(loggedInAccount).status(200);
             } else {
                 ctx.status(401);
             }
