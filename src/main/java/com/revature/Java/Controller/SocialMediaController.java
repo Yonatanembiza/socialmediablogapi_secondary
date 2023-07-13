@@ -2,36 +2,6 @@ package com.revature.Java.Controller;
 
 import java.util.List;
 
-/**
- * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
- * found in readme.md as well as the test cases. You should
- * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
- */
-/*public class SocialMediaController {
-    
-    /**
-     * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
-     * suite must receive a Javalin object from this method.
-     * @return a Javalin app object which defines the behavior of the Javalin controller.
-     
-    public Javalin startAPI() {
-        Javalin app = Javalin.create();
-        app.get("example-endpoint", this::exampleHandler);
-
-        return app;
-    }
-
-    /**
-     * This is an example handler for an example endpoint.
-     * @param context The Javalin Context object manages information about both the HTTP request and response.
-     
-    private void exampleHandler(Context context) {
-        //context.json("sample text");
-    }
-    
-}
-*/
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.Java.Model.Account;
@@ -53,25 +23,30 @@ public class SocialMediaController {
         objectMapper = new ObjectMapper();
     }
 
+    /*
+     * initializes a Javalin instance,
+     * sets up the routes for handling HTTP requests,
+     * and returns the initialized Javalin instance.
+     */
     public Javalin startAPI() {
 
         Javalin app = Javalin.create();
 
-        // Register a user
+        // Register a new user
         app.post("/register", this::registerUserHandler);
         // User login
         app.post("/login", this::loginUserHandler);
-        // Create a message
+        // Create a new message
         app.post("/messages", this::createMessageHandler);
         // Retrieve all messages
         app.get("/messages", this::getAllMessagesHandler);
-        // Retrieve a message by ID
+        // Retrieve a message by message ID
         app.get("/messages/{message_id}", this::getMessageByIdHandler);
-        // localhost:8080/accounts/{account_id}/messages.
+        // Retrieve all messages by account ID
         app.get("/accounts/{account_id}/messages", this::getMessageByUserIdHandler);
-        // Delete message by ID
+        // Delete message by message ID
         app.delete("/messages/{message_id}", this::deleteMessageByIDHandler);
-        // Update a message
+        // Update a message by message ID
         app.patch("/messages/{message_id}", this::updateMessageByIDHandler);
 
         return app;
@@ -95,7 +70,6 @@ public class SocialMediaController {
 
     private void getAllMessagesHandler(Context ctx) {
         List<Message> messages = messageService.getAllMessages();
-        // ctx.json(messages).status(200);
         if (messages != null) {
             ctx.json(messages).status(200);
         } else {
@@ -106,7 +80,6 @@ public class SocialMediaController {
     private void getMessageByIdHandler(Context ctx) {
         int messageId = Integer.parseInt(ctx.pathParam("message_id"));
         Message message = messageService.getMessageById(messageId);
-        // ctx.json(message).status(200);
         if (message != null) {
             ctx.json(message).status(200);
         } else {
@@ -144,7 +117,7 @@ public class SocialMediaController {
     private void registerUserHandler(Context ctx) {
         try {
             Account account = objectMapper.readValue(ctx.body(), Account.class);
-            Account registeredAccount = accountService.registerAccount(account);
+            Account registeredAccount = accountService.registerAccount(account.getUsername(), account.getPassword());
             if (registeredAccount != null) {
                 ctx.json(registeredAccount).status(200);
             } else {
@@ -159,12 +132,8 @@ public class SocialMediaController {
     private void loginUserHandler(Context ctx) {
         try {
             Account account = objectMapper.readValue(ctx.body(), Account.class);
-            // String username = ctx.pathParam("username");
-            // String password = ctx.pathParam("password");
             Account loggedInAccount = accountService.login(account.getUsername(), account.getPassword());
             if (loggedInAccount != null) {
-                // String response = objectMapper.writeValueAsString(loggedInAccount);
-                // ctx.json(loggedInAccount).status(200);
                 ctx.json(loggedInAccount).status(200);
             } else {
                 ctx.status(401);
@@ -178,7 +147,6 @@ public class SocialMediaController {
     private void getMessageByUserIdHandler(Context ctx) {
         int postedby = Integer.parseInt(ctx.pathParam("account_id"));
         List<Message> messages = messageService.getMessagesByAccountId(postedby);
-        // ctx.json(message).status(200);
         if (messages != null) {
             ctx.json(messages).status(200);
         } else {
