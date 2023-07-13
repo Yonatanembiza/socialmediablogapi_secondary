@@ -22,7 +22,7 @@ public class MessageService {
      */
     public Message createMessage(Message message) {
         AccountDAO accountDAO = new AccountDAO();
-        if (isMessageValid(message) && accountDAO.doesAccountExistAccountID(message.getPosted_by())) {
+        if (isMessageValid(message.getMessage_text()) && accountDAO.doesAccountExistAccountID(message.getPosted_by())) {
             return messageDAO.insertMessage(message);
         }
         return null;
@@ -69,13 +69,12 @@ public class MessageService {
      * @param updatedText the updated message text.
      * @return the updated message, or null if the update is not successful.
      */
-    public Message updateMessageText(Message message) {
-        Message existingmessage = getMessageById(message.getMessage_id());
+    public Message updateMessageText(String message, int message_id) {
+        Message existingmessage = getMessageById(message_id);
         if ((existingmessage != null) && isMessageValid(message)) {
             // messageDAO.setMessage_text(message.getMessage_text());
-            messageDAO.updateMessageText(message.getMessage_id(), message.getPosted_by(), message.getMessage_text(),
-                    message.getTime_posted_epoch());
-            return messageDAO.getMessageById(message.getMessage_id());
+            messageDAO.updateMessageText(message_id, message);
+            return messageDAO.getMessageById(message_id);
         }
         return null;
     }
@@ -97,8 +96,8 @@ public class MessageService {
      * @param message the message to validate.
      * @return true if the message is valid, false otherwise.
      */
-    private boolean isMessageValid(Message message) {
-        String messageText = message.getMessage_text();
-        return !messageText.isBlank() && messageText.length() < 255;
+    private boolean isMessageValid(String message) {
+        // String messageText = message.getMessage_text();
+        return !message.isBlank() && message.length() < 255;
     }
 }

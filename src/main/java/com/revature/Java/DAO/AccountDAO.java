@@ -72,22 +72,21 @@ public class AccountDAO {
      * @return the newly inserted Account object with the generated Account ID, or
      *         null if not successful
      */
-    public Account insertAccount(String username, String password) {
+    public Account insertAccount(Account account) {
         Connection connection = ConnectionUtil.getConnection();
         try {
-            String sql = "INSERT INTO Account (user_name, password) VALUES (?, ?)";
+            String sql = "INSERT INTO account (user_name, password) VALUES (?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-            preparedStatement.setString(1, username);
-            preparedStatement.setString(2, password);
+            preparedStatement.setString(1, account.getUsername());
+            preparedStatement.setString(2, account.getPassword());
 
-            int affectedRows = preparedStatement.executeUpdate();
-            if (affectedRows > 0) {
-                ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    int generatedAccountId = generatedKeys.getInt(1);
-                    return new Account(generatedAccountId, username, username);
-                }
+            preparedStatement.executeUpdate();
+
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                int generatedAccountId = (int) generatedKeys.getLong(1);
+                return new Account(generatedAccountId, account.getUsername(), account.getPassword());
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());

@@ -10,16 +10,16 @@ public class AccountService {
         this.accountDAO = new AccountDAO();
     }
 
-    public Account registerAccount(String username, String password) {
-        if (username.isBlank() || password.length() < 4) {
+    public Account registerAccount(Account account) {
+        if (account.getUsername().isBlank() || account.getPassword().length() < 4) {
             return null;
         }
 
-        if (accountDAO.getAccountByUsername(username) != null) {
+        if (accountDAO.getAccountByUsername(account.getUsername()) != null) {
             return null;
         }
 
-        Account registeredAccount = accountDAO.insertAccount(username, password);
+        Account registeredAccount = accountDAO.insertAccount(account);
         if (registeredAccount != null) {
             return registeredAccount;
         } else {

@@ -46,7 +46,7 @@ public class MessageDAO {
     public Message getMessageById(int messageId) {
         Connection connection = ConnectionUtil.getConnection();
         try {
-            String sql = "SELECT * FROM Message WHERE message_id = ?";
+            String sql = "SELECT * FROM message WHERE message_id = ?";
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, messageId);
@@ -121,16 +121,14 @@ public class MessageDAO {
      * @param messageId   a message ID.
      * @param updatedText the updated message text.
      */
-    public void updateMessageText(int messageId, int posted_by, String updatedText, Long time_posted_epoch) {
+    public void updateMessageText(int messageId, String updatedText) {
         Connection connection = ConnectionUtil.getConnection();
         try {
-            String sql = "UPDATE Message SET message_text = ?, posted_by = ?, time_posted_epoch = ? WHERE message_id = ?";
+            String sql = "UPDATE message SET message_text = ? WHERE message_id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
             preparedStatement.setString(1, updatedText);
-            preparedStatement.setInt(2, posted_by);
-            preparedStatement.setLong(3, time_posted_epoch);
-            preparedStatement.setInt(4, messageId);
+            preparedStatement.setInt(2, messageId);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {

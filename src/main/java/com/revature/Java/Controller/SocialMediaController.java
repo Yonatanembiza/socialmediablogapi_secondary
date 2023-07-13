@@ -34,7 +34,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revature.Java.DAO.AccountDAO;
 import com.revature.Java.Model.Account;
 import com.revature.Java.Model.Message;
 import com.revature.Java.Service.AccountService;
@@ -83,8 +82,8 @@ public class SocialMediaController {
             Message message = objectMapper.readValue(ctx.body(), Message.class);
             Message createdMessage = messageService.createMessage(message);
             if (createdMessage != null) {
-                String response = objectMapper.writeValueAsString(createdMessage);
-                ctx.json(response).status(200);
+                // String response = objectMapper.writeValueAsString(createdMessage);
+                ctx.json(createdMessage).status(200);
             } else {
                 ctx.status(400);
             }
@@ -92,28 +91,6 @@ public class SocialMediaController {
             e.printStackTrace();
             ctx.status(400);
         }
-        /*
-         * try {
-         * Message message = objectMapper.readValue(ctx.body(), Message.class);
-         * 
-         * // Set the message_id to 0 (omitted)
-         * message.setMessage_id(0);
-         * 
-         * // Create the message and retrieve the inserted message with the generated
-         * // message_id
-         * Message createdMessage = messageService.createMessage(message);
-         * 
-         * if (createdMessage != null) {
-         * String response = objectMapper.writeValueAsString(createdMessage);
-         * // ctx.result(response).contentType("application/json").status(200);
-         * ctx.co.json(response).status(200);
-         * }
-         * } catch (JsonProcessingException e) {
-         * e.printStackTrace();
-         * ctx.status(400);
-         * }
-         */
-
     }
 
     private void getAllMessagesHandler(Context ctx) {
@@ -146,34 +123,16 @@ public class SocialMediaController {
         } else {
             ctx.status(200).result("");
         }
-        /*
-         * int messageId = Integer.parseInt(ctx.pathParam("message_id"));
-         * Message deletedMessage = messageService.deleteMessage(messageId);
-         * 
-         * if (deletedMessage != null) {
-         * // ctx.json(deletedMessage).status(200);
-         * try {
-         * String response = objectMapper.writeValueAsString(deletedMessage);
-         * ctx.status(200).result(response);
-         * } catch (Exception e) {
-         * // TODO: handle exception
-         * ctx.status(200).result("");
-         * }
-         * } else {
-         * ctx.status(200).result("");
-         * }
-         */
     }
 
     private void updateMessageByIDHandler(Context ctx) {
-        // int message_d = Integer.parseInt(ctx.pathParam("message_id"));
-        // int message_text = Integer.parseInt(ctx.pathParam("message_id"));
+        // int message_id = Integer.parseInt(ctx.pathParam("message_id"));
+        // String message_text = ctx.pathParam("message_id");;
         try {
+            int message_id = Integer.parseInt(ctx.pathParam("message_id"));
             Message message = objectMapper.readValue(ctx.body(), Message.class);
-            Message updatedMessage = messageService.updateMessageText(message);
+            Message updatedMessage = messageService.updateMessageText(message.getMessage_text(), message_id);
             if (updatedMessage != null) {
-                String response = objectMapper.writeValueAsString(updatedMessage);
-                // ctx.result(response).status(200);
                 ctx.json(updatedMessage).status(200);
             } else {
                 ctx.status(400);
@@ -188,8 +147,8 @@ public class SocialMediaController {
         try {
             Account account = objectMapper.readValue(ctx.body(), Account.class);
             // This will omit the account_id
-            // account.setAccount_id(0);
-            Account registeredAccount = accountService.registerAccount(account.username, account.password);
+            account.setAccount_id(0);
+            Account registeredAccount = accountService.registerAccount(account);
             if (registeredAccount != null) {
                 // String response = objectMapper.writeValueAsString(registeredAccount);
                 // ctx.result(response).contentType("application/json").status(200);
@@ -208,10 +167,10 @@ public class SocialMediaController {
             Account account = objectMapper.readValue(ctx.body(), Account.class);
             // String username = ctx.pathParam("username");
             // String password = ctx.pathParam("password");
-            Account loggedInAccount = accountService.login(account.username, account.password);
+            Account loggedInAccount = accountService.login(account.getUsername(), account.getPassword());
             if (loggedInAccount != null) {
                 // String response = objectMapper.writeValueAsString(loggedInAccount);
-                // ctx.result(response).contentType("application/json").status(200);
+                // ctx.json(loggedInAccount).status(200);
                 ctx.json(loggedInAccount).status(200);
             } else {
                 ctx.status(401);
