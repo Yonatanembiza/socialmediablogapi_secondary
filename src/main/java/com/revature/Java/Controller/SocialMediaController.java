@@ -126,8 +126,6 @@ public class SocialMediaController {
     }
 
     private void updateMessageByIDHandler(Context ctx) {
-        // int message_id = Integer.parseInt(ctx.pathParam("message_id"));
-        // String message_text = ctx.pathParam("message_id");;
         try {
             int message_id = Integer.parseInt(ctx.pathParam("message_id"));
             Message message = objectMapper.readValue(ctx.body(), Message.class);
