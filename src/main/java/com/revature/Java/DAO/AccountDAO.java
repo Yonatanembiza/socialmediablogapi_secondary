@@ -176,7 +176,7 @@ public class AccountDAO {
 
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
-                Account account = new Account(rs.getInt("Account_id"), rs.getString("user_name"),
+                Account account = new Account(rs.getInt("account_id"), rs.getString("user_name"),
                         rs.getString("password"));
                 return account;
             }

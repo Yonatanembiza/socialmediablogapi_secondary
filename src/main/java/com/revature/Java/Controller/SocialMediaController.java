@@ -146,12 +146,8 @@ public class SocialMediaController {
     private void registerUserHandler(Context ctx) {
         try {
             Account account = objectMapper.readValue(ctx.body(), Account.class);
-            // This will omit the account_id
-            account.setAccount_id(0);
             Account registeredAccount = accountService.registerAccount(account);
             if (registeredAccount != null) {
-                // String response = objectMapper.writeValueAsString(registeredAccount);
-                // ctx.result(response).contentType("application/json").status(200);
                 ctx.json(registeredAccount).status(200);
             } else {
                 ctx.status(400);
